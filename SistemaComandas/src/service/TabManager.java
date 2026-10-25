@@ -20,7 +20,7 @@ public class TabManager {
 
     public Tab find(int id) {
         Tab tab = openTabs.get(id);
-        if (tab == null) throw new NoSuchElementException("No open tab with id " + id);
+        if (tab == null) throw new NoSuchElementException("Não existe comanda aberta com o id " + id);
         return tab;
     }
 

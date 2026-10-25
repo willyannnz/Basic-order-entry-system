@@ -19,7 +19,7 @@ public class Tab {
     }
 
     public void addItem(String name, double price, int quantity) {
-        if (quantity <= 0) throw new IllegalArgumentException("Invalid quantity");
+        if (quantity <= 0) throw new IllegalArgumentException("Quantidade inválida");
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(name)) {
                 item.changeQuantity(quantity);
@@ -46,7 +46,7 @@ public class Tab {
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(name)) return item;
         }
-        throw new NoSuchElementException("Item not found: " + name);
+        throw new NoSuchElementException("Item não encontrado: " + name);
     }
 
     public double getTotal() {

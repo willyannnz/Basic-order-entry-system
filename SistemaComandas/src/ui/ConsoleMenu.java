@@ -103,23 +103,27 @@ public class ConsoleMenu {
 
     private void addProduct(Tab tab) {
         tab.addItem(readText("Produto: "), readPrice("Preço: "), readInt("Qtd: "));
+        manager.save(tab);
     }
 
     private void addQuantity(Tab tab) {
         Item item = pickItem(tab, "Qual item? ");
         int amount = readPositiveInt("Quantos somar? ");
         tab.changeQuantity(item.getName(), amount);
+        manager.save(tab);
     }
 
     private void removeQuantity(Tab tab) {
         Item item = pickItem(tab, "Qual item? ");
         int amount = readPositiveInt("Quantos tirar? ");
         tab.changeQuantity(item.getName(), -amount);
+        manager.save(tab);
     }
 
     private void deleteItem(Tab tab) {
         Item item = pickItem(tab, "Qual item excluir? ");
         tab.removeItem(item.getName());
+        manager.save(tab);
     }
 
     private void editNote(Tab tab) {
@@ -128,6 +132,7 @@ public class ConsoleMenu {
         }
         String note = readText("Nova observação (deixe vazio para apagar): ");
         tab.setNote(note);
+        manager.save(tab);
         System.out.println(note.isEmpty() ? "Observação apagada." : "Observação salva.");
     }
 

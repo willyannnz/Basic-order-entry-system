@@ -6,15 +6,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Tab {
-    private static int nextId = 1;
-
-    private final int id = nextId++;
+    private final int id;
     private final String label;
     private final Table table;
     private final List<Item> items = new ArrayList<>();
     private String note = "";
 
-    public Tab(String label, Table table) {
+    public Tab(int id, String label, Table table) {
+        this.id = id;
         this.label = label;
         this.table = table;
     }

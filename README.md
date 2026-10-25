@@ -7,11 +7,11 @@ Each customer gets a **tab** (identified by name or by a short description, like
 ## Current status
 
 - Console version in Java, working.
-- Data lives in memory only (closing the program clears the tabs).
+- Data is saved in a local SQLite database (open tabs survive closing the program; closed tabs are kept as history).
 
 ## Planned
 
-- SQLite database (persistence and history of closed tabs)
+- History screen for closed tabs
 - Graphical interface
 
 ## Project structure
@@ -20,12 +20,15 @@ Each customer gets a **tab** (identified by name or by a short description, like
 SistemaComandas/src
 ├── Main.java
 ├── model/       Table, Item, Tab        (the data and its rules)
+├── repository/  Database, TabRepository (SQLite access)
 ├── service/     TabManager              (which tabs are open)
 └── ui/          ConsoleMenu             (talks to the user)
 ```
 
-A `repository/` package will be added when the database arrives.
+The database file is created automatically at `~/SistemaComandas/comandas.db`.
 
 ## How to run
 
-Open the `SistemaComandas` folder in IntelliJ IDEA (JDK 17 or newer) and run `Main`.
+Open the inner `SistemaComandas` folder in IntelliJ IDEA (JDK 17 or newer).
+
+The SQLite driver is not committed to the repository. Download `sqlite-jdbc-3.41.2.2.jar` from the [sqlite-jdbc releases](https://github.com/xerial/sqlite-jdbc/releases/tag/3.41.2.2), put it in `SistemaComandas/lib/` and add it as a library (right-click the jar > Add as Library). Then run `Main`.

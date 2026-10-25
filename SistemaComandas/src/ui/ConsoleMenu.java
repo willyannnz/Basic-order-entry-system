@@ -58,6 +58,9 @@ public class ConsoleMenu {
         for (Tab tab : manager.listOpen()) {
             System.out.printf("#%d - %s [%s] -> R$ %.2f%n",
                     tab.getId(), tab.getLabel(), tab.getTable().getDisplayName(), tab.getTotal());
+            if (!tab.getNote().isEmpty()) {
+                System.out.println("      Obs: " + tab.getNote());
+            }
         }
     }
 
@@ -68,15 +71,17 @@ public class ConsoleMenu {
     private void editTab(Tab tab) {
         while (true) {
             printTab(tab);
-            String back = tab.getItems().isEmpty() ? "0 = voltar (ainda não pegou nada)" : "0 = voltar";
-            System.out.println("\nn = novo item | 1+ = soma 1 | 1- = tira 1 | 1x = exclui o item | " + back);
-            String command = readText("> ").toLowerCase();
+            printEditMenu(tab);
+            String option = readText("> ");
             try {
-                if (command.equals("0")) return;
-                if (command.equals("n")) {
-                    tab.addItem(readText("Produto: "), readPrice("Preço: "), readInt("Qtd: "));
-                } else {
-                    applyItemCommand(tab, command);
+                switch (option) {
+                    case "1" -> addProduct(tab);
+                    case "2" -> addQuantity(tab);
+                    case "3" -> removeQuantity(tab);
+                    case "4" -> deleteItem(tab);
+                    case "5" -> editNote(tab);
+                    case "0" -> { return; }
+                    default -> System.out.println("Opção inválida.");
                 }
             } catch (Exception e) {
                 System.out.println("Erro: " + e.getMessage());
@@ -84,26 +89,65 @@ public class ConsoleMenu {
         }
     }
 
-    // Commands like "2+" (add 1), "2-" (remove 1) and "2x" (delete the whole item)
-    private void applyItemCommand(Tab tab, String command) {
-        if (!command.matches("\\d{1,3}[+\\-x]")) {
-            throw new IllegalArgumentException("Comando inválido. Exemplos: n, 1+, 2-, 3x, 0");
+    private void printEditMenu(Tab tab) {
+        System.out.println();
+        System.out.println("  1) Adicionar produto");
+        System.out.println("  2) Somar quantidade em um item");
+        System.out.println("  3) Tirar quantidade de um item");
+        System.out.println("  4) Excluir um item");
+        System.out.println("  5) Observação");
+        System.out.println(tab.getItems().isEmpty()
+                ? "  0) Voltar (ainda não pegou nada)"
+                : "  0) Voltar");
+    }
+
+    private void addProduct(Tab tab) {
+        tab.addItem(readText("Produto: "), readPrice("Preço: "), readInt("Qtd: "));
+    }
+
+    private void addQuantity(Tab tab) {
+        Item item = pickItem(tab, "Qual item? ");
+        int amount = readPositiveInt("Quantos somar? ");
+        tab.changeQuantity(item.getName(), amount);
+    }
+
+    private void removeQuantity(Tab tab) {
+        Item item = pickItem(tab, "Qual item? ");
+        int amount = readPositiveInt("Quantos tirar? ");
+        tab.changeQuantity(item.getName(), -amount);
+    }
+
+    private void deleteItem(Tab tab) {
+        Item item = pickItem(tab, "Qual item excluir? ");
+        tab.removeItem(item.getName());
+    }
+
+    private void editNote(Tab tab) {
+        if (!tab.getNote().isEmpty()) {
+            System.out.println("Observação atual: " + tab.getNote());
         }
-        char action = command.charAt(command.length() - 1);
-        int number = Integer.parseInt(command.substring(0, command.length() - 1));
+        String note = readText("Nova observação (deixe vazio para apagar): ");
+        tab.setNote(note);
+        System.out.println(note.isEmpty() ? "Observação apagada." : "Observação salva.");
+    }
+
+    // Asks for the item number shown on screen and returns that item
+    private Item pickItem(Tab tab, String question) {
+        if (tab.getItems().isEmpty()) {
+            throw new IllegalStateException("A comanda ainda não tem itens.");
+        }
+        int number = readInt(question);
         if (number < 1 || number > tab.getItems().size()) {
             throw new IllegalArgumentException("Não existe o item " + number + " na lista");
         }
-        Item item = tab.getItems().get(number - 1);
-        switch (action) {
-            case '+' -> tab.changeQuantity(item.getName(), 1);
-            case '-' -> tab.changeQuantity(item.getName(), -1);
-            case 'x' -> tab.removeItem(item.getName());
-        }
+        return tab.getItems().get(number - 1);
     }
 
     private void printTab(Tab tab) {
         System.out.println("\n#" + tab.getId() + " - " + tab.getLabel() + " [" + tab.getTable().getDisplayName() + "]");
+        if (!tab.getNote().isEmpty()) {
+            System.out.println("  Obs: " + tab.getNote());
+        }
         int number = 1;
         for (Item item : tab.getItems()) {
             System.out.printf("  %d) %dx %s (R$ %.2f) = R$ %.2f%n",
@@ -124,6 +168,12 @@ public class ConsoleMenu {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Número inválido: " + text);
         }
+    }
+
+    private int readPositiveInt(String message) {
+        int value = readInt(message);
+        if (value <= 0) throw new IllegalArgumentException("Quantidade inválida");
+        return value;
     }
 
     private double readPrice(String message) {

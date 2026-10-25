@@ -12,6 +12,7 @@ public class Tab {
     private final String label;
     private final Table table;
     private final List<Item> items = new ArrayList<>();
+    private String note = "";
 
     public Tab(String label, Table table) {
         this.label = label;
@@ -19,6 +20,8 @@ public class Tab {
     }
 
     public void addItem(String name, double price, int quantity) {
+        if (name.isBlank()) throw new IllegalArgumentException("Nome do produto vazio");
+        if (price < 0) throw new IllegalArgumentException("Preço inválido");
         if (quantity <= 0) throw new IllegalArgumentException("Quantidade inválida");
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(name)) {
@@ -31,7 +34,11 @@ public class Tab {
 
     public void changeQuantity(String name, int delta) {
         Item item = findItem(name);
-        if (item.getQuantity() + delta <= 0) {
+        int newQuantity = item.getQuantity() + delta;
+        if (newQuantity < 0) {
+            throw new IllegalArgumentException("O item só tem " + item.getQuantity() + " unidade(s)");
+        }
+        if (newQuantity == 0) {
             items.remove(item); // reached zero, drop it from the list
         } else {
             item.changeQuantity(delta);
@@ -59,4 +66,10 @@ public class Tab {
     public String getLabel() { return label; }
     public Table getTable() { return table; }
     public List<Item> getItems() { return Collections.unmodifiableList(items); }
+
+    public String getNote() { return note; }
+
+    public void setNote(String note) {
+        this.note = (note == null) ? "" : note.trim();
+    }
 }

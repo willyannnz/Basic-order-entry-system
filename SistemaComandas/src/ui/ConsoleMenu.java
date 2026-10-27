@@ -1,10 +1,14 @@
 package ui;
 
+import model.ClosedTab;
 import model.Item;
 import model.Tab;
 import model.Table;
 import service.TabManager;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleMenu {
@@ -17,13 +21,14 @@ public class ConsoleMenu {
 
     public void run() {
         while (true) {
-            System.out.println("\n1) Nova comanda  2) Comandas abertas  3) Editar comanda  4) Fechar comanda  0) Sair");
+            System.out.println("\n1) Nova comanda  2) Comandas abertas  3) Editar comanda  4) Fechar comanda  5) Histórico  0) Sair");
             String option = readText("> ");
             try {
                 switch (option) {
                     case "1" -> newTab();
                     case "2" -> listTabs();
                     case "3" -> editTab();
+                    case "5" -> showHistory();
                     case "4" -> {
                         manager.close(readInt("Id da comanda: "));
                         System.out.println("Comanda fechada.");
@@ -48,6 +53,49 @@ public class ConsoleMenu {
         Tab tab = manager.open(label, table);
         System.out.println("Comanda #" + tab.getId() + " criada.");
         editTab(tab); // já cai direto no lançamento de itens
+    }
+
+    private static final int HISTORY_LIMIT = 15;
+
+    private void showHistory() {
+        List<ClosedTab> closed = manager.listClosed(HISTORY_LIMIT);
+        if (closed.isEmpty()) {
+            System.out.println("Nenhuma comanda fechada ainda.");
+            return;
+        }
+        System.out.println("\nÚltimas comandas fechadas:");
+        for (ClosedTab tab : closed) {
+            System.out.printf("#%d - %s [%s] fechada em %s -> R$ %.2f%n",
+                    tab.id(), tab.label(), tab.table().getDisplayName(), formatDate(tab.closedAt()), tab.total());
+        }
+        String answer = readText("Id para ver os itens (Enter para voltar): ");
+        if (answer.isEmpty()) return;
+        for (ClosedTab tab : closed) {
+            if (String.valueOf(tab.id()).equals(answer)) {
+                printClosedTab(tab);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Esse id não está na lista acima");
+    }
+
+    private void printClosedTab(ClosedTab tab) {
+        System.out.println("\n#" + tab.id() + " - " + tab.label() + " [" + tab.table().getDisplayName() + "]");
+        System.out.println("  Aberta em " + formatDate(tab.openedAt()) + " | fechada em " + formatDate(tab.closedAt()));
+        if (!tab.note().isEmpty()) {
+            System.out.println("  Obs: " + tab.note());
+        }
+        for (Item item : tab.items()) {
+            System.out.printf("  %dx %s (R$ %.2f) = R$ %.2f%n",
+                    item.getQuantity(), item.getName(), item.getPrice(), item.getSubtotal());
+        }
+        System.out.printf("  TOTAL: R$ %.2f%n", tab.total());
+    }
+
+    private String formatDate(String databaseDate) {
+        if (databaseDate == null) return "-";
+        LocalDateTime date = LocalDateTime.parse(databaseDate.replace(' ', 'T'));
+        return date.format(DateTimeFormatter.ofPattern("dd/MM HH:mm"));
     }
 
     private void listTabs() {

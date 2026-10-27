@@ -1,5 +1,6 @@
 package service;
 
+import model.ClosedTab;
 import model.Tab;
 import model.Table;
 import repository.TabRepository;
@@ -7,6 +8,7 @@ import repository.TabRepository;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -43,6 +45,10 @@ public class TabManager {
         find(id);
         repository.close(id);
         openTabs.remove(id);
+    }
+
+    public List<ClosedTab> listClosed(int limit) {
+        return repository.findClosed(limit);
     }
 
     public Collection<Tab> listOpen() {

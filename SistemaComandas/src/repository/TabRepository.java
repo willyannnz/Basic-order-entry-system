@@ -1,5 +1,6 @@
 package repository;
 
+import model.ClosedTab;
 import model.Item;
 import model.Tab;
 import model.Table;
@@ -109,6 +110,39 @@ public class TabRepository {
             throw dbError(e);
         }
         return tabs;
+    }
+
+    // Most recently closed tabs first
+    public List<ClosedTab> findClosed(int limit) {
+        List<ClosedTab> closed = new ArrayList<>();
+        String tabsSql = "SELECT id, label, table_side, note, opened_at, closed_at FROM tab "
+                + "WHERE status = 'CLOSED' ORDER BY closed_at DESC, id DESC LIMIT ?";
+        String itemsSql = "SELECT name, price, quantity FROM tab_item WHERE tab_id = ? ORDER BY id";
+        try (Connection connection = database.connect();
+             PreparedStatement tabStatement = connection.prepareStatement(tabsSql)) {
+            tabStatement.setInt(1, limit);
+            try (ResultSet tabRows = tabStatement.executeQuery()) {
+                while (tabRows.next()) {
+                    int id = tabRows.getInt("id");
+                    List<Item> items = new ArrayList<>();
+                    try (PreparedStatement itemStatement = connection.prepareStatement(itemsSql)) {
+                        itemStatement.setInt(1, id);
+                        try (ResultSet itemRows = itemStatement.executeQuery()) {
+                            while (itemRows.next()) {
+                                items.add(new Item(itemRows.getString("name"), itemRows.getDouble("price"),
+                                        itemRows.getInt("quantity")));
+                            }
+                        }
+                    }
+                    closed.add(new ClosedTab(id, tabRows.getString("label"),
+                            Table.valueOf(tabRows.getString("table_side")), tabRows.getString("note"),
+                            tabRows.getString("opened_at"), tabRows.getString("closed_at"), items));
+                }
+            }
+        } catch (SQLException e) {
+            throw dbError(e);
+        }
+        return closed;
     }
 
     private IllegalStateException dbError(SQLException e) {

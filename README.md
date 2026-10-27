@@ -6,12 +6,11 @@ Each customer gets a **tab** (identified by name or by a short description, like
 
 ## Current status
 
-- Console version in Java, working.
+- Console version in Java, working (open tabs, items, notes and a history of closed tabs).
 - Data is saved in a local SQLite database (open tabs survive closing the program; closed tabs are kept as history).
 
 ## Planned
 
-- History screen for closed tabs
 - Graphical interface
 
 ## Project structure

@@ -13,7 +13,7 @@ Each customer gets a **tab** (identified by name or by a short description, like
 ## Project structure
 
 ```
-SistemaComandas/src
+BasicOrderEntrySystem/src
 ├── Main.java
 ├── model/       Table, Item, Tab        (the data and its rules)
 ├── repository/  Database, TabRepository (SQLite access)
@@ -26,6 +26,6 @@ The database file is created automatically at `~/SistemaComandas/comandas.db`.
 
 ## How to run
 
-Open the inner `SistemaComandas` folder in IntelliJ IDEA (JDK 17 or newer).
+Open the inner `BasicOrderEntrySystem` folder in IntelliJ IDEA (JDK 17 or newer).
 
-The SQLite driver is not committed to the repository. Download `sqlite-jdbc-3.41.2.2.jar` from the [sqlite-jdbc releases](https://github.com/xerial/sqlite-jdbc/releases/tag/3.41.2.2), put it in `SistemaComandas/lib/` and add it as a library (right-click the jar > Add as Library). Then run `Main`.
+The SQLite driver is not committed to the repository. Download `sqlite-jdbc-3.41.2.2.jar` from the [sqlite-jdbc releases](https://github.com/xerial/sqlite-jdbc/releases/tag/3.41.2.2), put it in `BasicOrderEntrySystem/lib/` and add it as a library (right-click the jar > Add as Library). Then run `Main`.

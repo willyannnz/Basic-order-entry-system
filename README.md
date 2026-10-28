@@ -7,11 +7,8 @@ Each customer gets a **tab** (identified by name or by a short description, like
 ## Current status
 
 - Console version in Java, working (open tabs, items, notes and a history of closed tabs).
+- Swing window as the default screen (the text menu is still available with the `--console` argument).
 - Data is saved in a local SQLite database (open tabs survive closing the program; closed tabs are kept as history).
-
-## Planned
-
-- Graphical interface
 
 ## Project structure
 
@@ -21,7 +18,8 @@ SistemaComandas/src
 ├── model/       Table, Item, Tab        (the data and its rules)
 ├── repository/  Database, TabRepository (SQLite access)
 ├── service/     TabManager              (which tabs are open)
-└── ui/          ConsoleMenu             (talks to the user)
+├── ui/          ConsoleMenu             (text menu, run with --console)
+└── gui/         MainWindow, HistoryDialog, ... (Swing window, the default)
 ```
 
 The database file is created automatically at `~/SistemaComandas/comandas.db`.

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ItemTableModel extends AbstractTableModel {
-    private static final String[] COLUMNS = {"#", "Produto", "Preço", "Qtd", "Subtotal"};
+    private static final String[] COLUMNS = {"N. Item", "Produto", "Preço", "Qtd", "Subtotal"};
 
     private List<Item> items = new ArrayList<>();
 

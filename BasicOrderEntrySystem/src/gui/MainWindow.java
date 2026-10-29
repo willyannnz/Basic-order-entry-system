@@ -111,7 +111,9 @@ public class MainWindow extends JFrame {
         itemTable.setRowHeight(34);
         itemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         itemTable.getTableHeader().setReorderingAllowed(false);
-        itemTable.getColumnModel().getColumn(0).setMaxWidth(50);
+        itemTable.getTableHeader().setFont(itemTable.getTableHeader().getFont().deriveFont(Font.BOLD));
+        itemTable.getColumnModel().getColumn(0).setPreferredWidth(90);
+        itemTable.getColumnModel().getColumn(0).setMaxWidth(90);
         itemTable.getColumnModel().getColumn(3).setMaxWidth(80);
         DefaultTableCellRenderer right = new DefaultTableCellRenderer();
         right.setHorizontalAlignment(SwingConstants.RIGHT);

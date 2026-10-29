@@ -32,6 +32,7 @@ class HistoryDialog extends JDialog {
         table.setRowHeight(30);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getTableHeader().setReorderingAllowed(false);
+        table.getTableHeader().setFont(table.getTableHeader().getFont().deriveFont(Font.BOLD));
         table.getColumnModel().getColumn(0).setMaxWidth(60);
         DefaultTableCellRenderer right = new DefaultTableCellRenderer();
         right.setHorizontalAlignment(SwingConstants.RIGHT);

@@ -29,3 +29,7 @@ The database file is created automatically at `~/SistemaComandas/comandas.db`.
 Open the inner `BasicOrderEntrySystem` folder in IntelliJ IDEA (JDK 17 or newer).
 
 The SQLite driver is not committed to the repository. Download `sqlite-jdbc-3.41.2.2.jar` from the [sqlite-jdbc releases](https://github.com/xerial/sqlite-jdbc/releases/tag/3.41.2.2), put it in `BasicOrderEntrySystem/lib/` and add it as a library (right-click the jar > Add as Library). Then run `Main`.
+
+## Taking it to another computer (Windows)
+
+With the driver in `lib/` as described above, double-click `build.bat` (in the repository root). It compiles the project, builds a JAR and uses `jpackage` to create `BasicOrderEntrySystem/dist/SistemaComandas/`, a folder with `SistemaComandas.exe` and Java included. Copy that whole folder to the other computer and double-click the `.exe`; nothing else needs to be installed. The database starts empty there, at `C:\Users\<user>\SistemaComandas\comandas.db`.
